@@ -1,0 +1,19 @@
+index.html
+  s_394574630c06c8::t_3bf99796d072d3 1-910
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b5ed90be827c1022e7ac142c2c83198ee1ae4722",
+  "prompts": {},
+  "sessions": {
+    "s_394574630c06c8": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1f9d9-486f-7101-8acb-a327e88746de",
+        "model": "gpt-6.2-sol"
+      },
+      "human_author": "MaxySpark <me@maxyspark.me>"
+    }
+  }
+}
