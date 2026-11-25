@@ -1,0 +1,910 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="Compare US export fees, Indian contractor fees with GST added or included, and employee salary under India's FY 2026–27 new income-tax regime.">
+  <title>Contractor &amp; salary calculator — FY 2026–27</title>
+  <style>
+    :root {
+      --ink: #13283e;
+      --text: #283b4d;
+      --muted: #617184;
+      --surface: #ffffff;
+      --background: #f1f5f8;
+      --line: #dce5eb;
+      --teal: #096a63;
+      --teal-soft: #e9f5f1;
+      --blue: #225ab0;
+      --blue-soft: #edf3ff;
+      --amber: #805315;
+      --amber-soft: #fff6e6;
+      --red: #ac3341;
+      --red-soft: #fff0f1;
+      --radius: 18px;
+      --shadow: 0 7px 25px rgba(19, 40, 62, .035);
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { background: var(--background); scroll-behavior: smooth; }
+    body { margin: 0; color: var(--text); font: 400 16px/1.55 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }
+    button, input, select { font: inherit; }
+    button, select, summary { -webkit-tap-highlight-color: transparent; }
+    a { color: var(--blue); text-underline-offset: 3px; }
+    a:hover { text-decoration-thickness: 2px; }
+    button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible, a:focus-visible { outline: 3px solid #297acb; outline-offset: 3px; }
+    h1, h2, h3, h4, p { margin: 0; }
+    h1, h2, h3, h4 { color: var(--ink); line-height: 1.22; }
+    button { cursor: pointer; }
+    input, select { min-width: 0; }
+    [hidden] { display: none !important; }
+    .skip-link { position: absolute; left: 20px; top: -80px; z-index: 20; padding: 10px 16px; background: white; border: 2px solid var(--blue); border-radius: 8px; }
+    .skip-link:focus { top: 16px; }
+    .page { width: min(1440px, 100%); margin: 0 auto; padding: 40px 32px 30px; }
+    .masthead { display: flex; justify-content: space-between; align-items: flex-start; gap: 28px; margin-bottom: 30px; }
+    .eyebrow { margin-bottom: 10px; color: var(--teal); font-size: 12px; font-weight: 750; letter-spacing: .09em; text-transform: uppercase; }
+    h1 { font-size: clamp(28px, 3.3vw, 42px); letter-spacing: -.035em; font-weight: 750; }
+    .lede { max-width: 800px; margin-top: 12px; color: var(--muted); }
+    .masthead-actions { display: flex; gap: 9px; flex-shrink: 0; padding-top: 26px; }
+    .button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 42px; border: 1px solid var(--line); border-radius: 10px; padding: 9px 15px; background: white; color: var(--ink); font-size: 14px; font-weight: 650; line-height: 1.2; }
+    .button:hover { background: #eaf0f5; border-color: #bacbd8; }
+    .button.primary { background: var(--ink); border-color: var(--ink); color: white; }
+    .button.primary:hover { background: #254661; }
+    .workspace { display: grid; grid-template-columns: 330px minmax(0, 1fr); align-items: start; gap: 24px; }
+    .panel { min-width: 0; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+    .inputs-panel { padding: 23px; }
+    .panel-heading { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+    .section-number { display: inline-flex; align-items: center; justify-content: center; width: 25px; height: 25px; border-radius: 8px; background: var(--teal-soft); color: var(--teal); font-size: 12px; font-weight: 750; flex-shrink: 0; }
+    h2 { font-size: 19px; letter-spacing: -.018em; }
+    h3 { font-size: 17px; letter-spacing: -.015em; }
+    .section-copy { color: var(--muted); font-size: 14px; line-height: 1.5; }
+    .input-stack { display: grid; gap: 18px; margin-top: 22px; }
+    .field { display: grid; gap: 6px; min-width: 0; }
+    .field label, .field-label { color: #354c61; font-size: 14px; font-weight: 650; line-height: 1.4; }
+    .field label .amount-period-label { color: var(--muted); font-weight: 450; white-space: nowrap; }
+    .input-wrap { position: relative; display: flex; align-items: center; width: 100%; }
+    .input-prefix, .input-suffix { position: absolute; pointer-events: none; color: var(--muted); font-size: 15px; }
+    .input-prefix { left: 13px; }
+    .input-suffix { right: 13px; }
+    .field input, .field select, .compact-select { display: block; width: 100%; min-height: 45px; border: 1px solid #bdcbd7; border-radius: 9px; background: white; color: var(--ink); padding: 10px 12px; line-height: 1.3; transition: border-color .12s, box-shadow .12s; }
+    .field input { font-variant-numeric: tabular-nums; }
+    .field .money-input { padding-left: 31px; }
+    .field .percent-input { padding-right: 33px; }
+    .field input:hover, .field select:hover, .compact-select:hover { border-color: #8da5b9; }
+    .field input:focus, .field select:focus, .compact-select:focus { border-color: var(--blue); }
+    .field input[aria-invalid="true"] { border-color: var(--red); background: #fffafa; }
+    .field small, .field-hint { color: var(--muted); font-size: 12px; line-height: 1.45; }
+    .main-amounts { display: grid; gap: 18px; padding-top: 2px; }
+    .assumptions-input { margin-top: 23px; padding-top: 17px; border-top: 1px solid var(--line); }
+    details summary { position: relative; cursor: pointer; color: var(--ink); font-size: 14px; font-weight: 700; line-height: 1.45; list-style-position: outside; margin-left: 16px; padding: 3px 2px; }
+    details summary::marker { color: var(--teal); font-size: 12px; }
+    .assumptions-input .input-stack { gap: 15px; margin-top: 17px; }
+    .percentage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 12px; }
+    .percentage-grid .field label { font-size: 13px; }
+    .notice { border-radius: 11px; padding: 13px 14px; font-size: 12px; line-height: 1.5; }
+    .tds-notice { margin-top: 18px; color: var(--amber); background: var(--amber-soft); border: 1px solid #f0dfb9; }
+    .tds-notice strong { font-weight: 750; }
+    .cashflow-note { margin-top: 13px; color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .error-panel { margin-top: 16px; padding: 12px 14px; border: 1px solid #ebbac1; border-radius: 10px; color: #8b2330; background: var(--red-soft); font-size: 13px; line-height: 1.5; }
+    .error-panel:empty { display: none; }
+    .error-panel ul { padding-left: 18px; margin: 5px 0 0; }
+    .results-panel { min-width: 0; display: grid; gap: 19px; }
+    .results-header { display: flex; justify-content: space-between; align-items: end; gap: 18px; padding: 3px 0 0; }
+    .results-header .section-copy { margin-top: 7px; max-width: 490px; }
+    .display-controls { flex: 0 0 auto; display: grid; gap: 5px; }
+    .display-controls label { color: var(--muted); font-size: 12px; font-weight: 650; }
+    .compact-select { width: auto; min-width: 139px; min-height: 40px; padding: 8px 11px; font-size: 14px; }
+    #case-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; align-items: stretch; }
+    .case-card { position: relative; min-width: 0; padding: 21px 22px 19px; border: 1px solid var(--line); border-top: 3px solid #92a7bb; border-radius: 15px; background: var(--surface); box-shadow: var(--shadow); }
+    .case-card.export, .case-card[data-case="export"], .case-card:first-child { border-top-color: var(--teal); }
+    .case-card.indiaExtra, .case-card[data-case="indiaExtra"], .case-card:nth-child(2) { border-top-color: #4d83bb; }
+    .case-card.indiaIncluded, .case-card[data-case="indiaIncluded"], .case-card:nth-child(3) { border-top-color: #c08a43; }
+    .case-card.salary, .case-card[data-case="salary"], .case-card:nth-child(4) { border-top-color: #7f7aa5; }
+    .case-title { color: #40566b; font-size: 14px; font-weight: 700; letter-spacing: 0; line-height: 1.4; }
+    .case-heading { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .case-badge { padding: 3px 7px; border-radius: 5px; color: #15534c; background: var(--teal-soft); font-size: 10px; font-weight: 700; }
+    .case-description { margin-top: 8px; color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .case-unit { color: var(--muted); font-size: 12px; }
+    .case-net.unavailable { font-size: 24px; color: var(--muted); }
+    .case-net { display: block; margin: 12px 0 4px; color: var(--ink); font-size: clamp(24px, 2.5vw, 34px); font-weight: 750; font-variant-numeric: tabular-nums; letter-spacing: -.04em; line-height: 1.2; overflow-wrap: anywhere; }
+    .case-net small, .case-net span.unit { color: var(--muted); font-size: 12px; font-weight: 500; letter-spacing: 0; }
+    .case-delta { display: inline-block; margin-top: 9px; padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 650; line-height: 1.4; }
+    .positive { color: #076b4b; }
+    .negative { color: #a33341; }
+    .neutral { color: #5c7183; }
+    .case-delta.positive { background: #e9f6ef; }
+    .case-delta.negative { background: #fff0f1; }
+    .case-delta.neutral { background: #edf2f6; }
+    .case-meta { margin-top: 13px; color: var(--muted); font-size: 12px; line-height: 1.6; }
+    .case-meta p + p { margin-top: 3px; }
+    .case-meta dl { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; margin: 0; }
+    .case-meta dt, .case-meta dd { margin: 0; }
+    .case-meta dd { color: #3d5368; text-align: right; font-variant-numeric: tabular-nums; }
+    .case-status { margin-top: 12px; color: var(--amber); font-size: 12px; line-height: 1.5; }
+    .case-status:empty { display: none; }
+    .placeholder { margin: 0; color: var(--muted); font-size: 14px; }
+    #case-cards > .placeholder { grid-column: 1 / -1; padding: 35px 24px; background: white; border: 1px solid var(--line); border-radius: 15px; }
+    .targets-panel { padding: 21px 23px; background: #eaf4f3; border-color: #cce2df; box-shadow: none; }
+    .targets-panel h3 { color: #174c49; }
+    .targets-panel .section-copy { margin-top: 6px; color: #547774; }
+    #negotiation-targets { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 20px; margin-top: 15px; }
+    #negotiation-targets > p:only-child { grid-column: 1 / -1; }
+    #negotiation-targets .target, #negotiation-targets .target-card { min-width: 0; padding: 14px 15px; border: 1px solid #c8dedb; border-radius: 11px; background: rgba(255, 255, 255, .72); }
+    #negotiation-targets h4, #negotiation-targets .target-label { font-size: 12px; font-weight: 650; color: #446863; line-height: 1.5; }
+    #negotiation-targets .target-amount, #negotiation-targets .target-value { display: block; margin-top: 6px; color: #174c49; font-size: 23px; font-weight: 750; line-height: 1.3; letter-spacing: -.025em; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+    #negotiation-targets .target-note, #negotiation-targets small { display: block; margin-top: 5px; color: #547774; font-size: 12px; line-height: 1.5; }
+    .detail-panel { padding: 22px 23px 23px; }
+    .detail-panel > .section-copy { margin-top: 7px; }
+    #comparison-table-container { max-width: 100%; overflow-x: auto; margin-top: 18px; border: 1px solid var(--line); border-radius: 10px; scrollbar-width: thin; scrollbar-color: #b2c1ce #f3f6f9; }
+    #comparison-table-container > .placeholder { padding: 19px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; line-height: 1.45; font-variant-numeric: tabular-nums; }
+    #comparison-table-container table { min-width: 680px; }
+    caption { padding: 12px 14px; color: var(--muted); font-size: 12px; text-align: left; }
+    th, td { padding: 12px 13px; border-bottom: 1px solid #e6edf2; vertical-align: top; }
+    th { background: #f4f7fa; color: #415a70; font-size: 12px; font-weight: 700; }
+    th:first-child, td:first-child { text-align: left; }
+    th:not(:first-child), td:not(:first-child) { text-align: right; }
+    tbody th { background: white; font-size: 13px; font-weight: 500; }
+    tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }
+    tbody tr:hover td, tbody tr:hover th { background: #f8fbfd; }
+    tr.total td, tr.total th, tr.highlight td, tr.highlight th, tr.net-row td, tr.net-row th { background: var(--teal-soft); color: #15534c; font-weight: 750; }
+    .table-note { margin-top: 12px; color: var(--muted); font-size: 12px; }
+    .calculation-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 14px; }
+    .calculation-header .field { width: min(100%, 260px); }
+    .calculation-header .field select { min-height: 41px; padding: 8px 10px; font-size: 13px; }
+    .calculation-header .field label { font-size: 12px; }
+    #calculation-details { margin-top: 19px; color: #455b6e; font-size: 14px; }
+    #calculation-details h4 { margin: 17px 0 10px; font-size: 14px; }
+    #calculation-details p + p { margin-top: 9px; }
+    #calculation-details ul, #calculation-details ol { padding-left: 21px; }
+    #calculation-details li + li { margin-top: 8px; }
+    #calculation-details dl { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 9px 14px; margin: 0; font-size: 13px; }
+    #calculation-details dl.calculation-list { display: block; }
+    .calculation-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--line); }
+    .calculation-row.calculation-total { color: #15534c; font-weight: 750; border-bottom: 0; }
+    #calculation-details dt, #calculation-details dd { margin: 0; }
+    #calculation-details dd { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
+    #calculation-details table { margin-top: 12px; }
+    #calculation-details .formula, #calculation-details .tax-summary { margin-top: 15px; padding: 12px 14px; background: #f3f6f9; border-radius: 9px; color: #405870; font-size: 13px; }
+    #status-note { color: var(--muted); font-size: 12px; line-height: 1.5; padding: 0 3px; }
+    #status-note:empty { display: none; }
+    .reference-panel { margin-top: 25px; padding: 20px 23px; }
+    .reference-panel summary { font-size: 14px; }
+    .reference-content { display: grid; grid-template-columns: 1.1fr 1fr; gap: 28px; margin-top: 17px; }
+    .reference-content h3 { margin-bottom: 11px; font-size: 14px; }
+    .reference-content ul { margin: 0; padding-left: 19px; color: var(--muted); font-size: 12px; line-height: 1.65; }
+    .reference-content li + li { margin-top: 8px; }
+    .source-list a { overflow-wrap: anywhere; }
+    .source-list small { display: block; margin-top: 2px; color: var(--muted); font-size: 11px; }
+    .footer { display: flex; justify-content: space-between; gap: 18px; padding: 18px 3px 0; color: #7a8795; font-size: 11px; }
+    .no-script { max-width: 900px; margin: 20px auto; padding: 16px 20px; border: 1px solid #e5b96d; border-radius: 10px; background: var(--amber-soft); color: #704711; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+    @media (min-width: 1450px) { .page { padding-top: 46px; } }
+    @media (max-width: 1100px) {
+      .page { padding: 30px 22px 24px; }
+      .workspace { grid-template-columns: 295px minmax(0, 1fr); gap: 19px; }
+      .inputs-panel { padding: 20px; }
+      .case-card { padding: 19px 17px 17px; }
+      .case-net { font-size: 28px; }
+      .detail-panel, .targets-panel { padding: 20px; }
+      .results-header { align-items: start; }
+    }
+    @media (max-width: 860px) {
+      .masthead { flex-direction: column; gap: 17px; }
+      .masthead-actions { padding-top: 0; }
+      .workspace { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+      .inputs-panel { padding: 23px; }
+      .input-stack { margin-top: 18px; }
+      .inputs-panel > .input-stack > .field { max-width: 280px; }
+      .main-amounts { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 17px; }
+      .main-amounts .field { align-content: start; }
+      .main-amounts label { min-height: 40px; }
+      .assumptions-input .input-stack { grid-template-columns: 1fr 1fr; align-items: start; }
+      .percentage-grid { grid-column: 1 / -1; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .tds-notice { margin-top: 17px; }
+      .case-net { font-size: 32px; }
+    }
+    @media (max-width: 560px) {
+      .page { padding: 24px 15px 22px; }
+      .masthead { margin-bottom: 24px; }
+      .eyebrow { font-size: 10px; }
+      h1 { font-size: 31px; }
+      .lede { font-size: 14px; }
+      .masthead-actions { width: 100%; }
+      .masthead-actions .button { flex: 1; }
+      .inputs-panel { padding: 20px; }
+      .main-amounts { grid-template-columns: minmax(0, 1fr); gap: 17px; }
+      .main-amounts label { min-height: 0; }
+      .inputs-panel > .input-stack > .field { max-width: none; }
+      .assumptions-input .input-stack { grid-template-columns: minmax(0, 1fr); }
+      .percentage-grid { grid-template-columns: 1fr 1fr; }
+      .results-header { flex-wrap: wrap; gap: 13px; }
+      .display-controls { display: flex; align-items: center; gap: 10px; }
+      .compact-select { min-width: 146px; }
+      #case-cards { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+      .case-card { padding: 20px 21px; }
+      .case-net { font-size: 34px; }
+      #negotiation-targets { grid-template-columns: minmax(0, 1fr); }
+      .detail-panel, .targets-panel { padding: 20px 17px; }
+      .calculation-header .field { width: 100%; }
+      .reference-panel { padding: 18px; }
+      .reference-content { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+      .footer { flex-direction: column; gap: 4px; }
+      #calculation-details dl { grid-template-columns: minmax(0, 1fr) auto; gap: 10px; font-size: 12px; }
+    }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
+    @media print {
+      @page { size: A4 landscape; margin: 12mm; }
+      html, body { background: white; font-size: 10pt; }
+      .page { width: 100%; padding: 0; }
+      .masthead { margin-bottom: 15px; }
+      h1 { font-size: 24pt; }
+      .eyebrow { font-size: 8pt; }
+      .lede { font-size: 10pt; }
+      .masthead-actions, .skip-link, .display-controls { display: none !important; }
+      .workspace { display: block; }
+      .inputs-panel { margin-bottom: 15px; padding: 14px; box-shadow: none; }
+      .inputs-panel > .input-stack { grid-template-columns: 125px minmax(0, 1fr); gap: 16px; }
+      .main-amounts { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .assumptions-input, .tds-notice, .cashflow-note { font-size: 8pt; }
+      .field input, .field select { min-height: 32px; padding-top: 6px; padding-bottom: 6px; font-size: 10pt; }
+      .results-panel { gap: 13px; }
+      #case-cards { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+      .case-card { padding: 13px; box-shadow: none; break-inside: avoid; }
+      .case-net { font-size: 21pt; }
+      .case-title { font-size: 10pt; }
+      .case-meta, .case-delta, .case-status { font-size: 8pt; }
+      .targets-panel, .detail-panel, .reference-panel { padding: 15px; box-shadow: none; }
+      .targets-panel, .calculation-header { break-inside: avoid; }
+      #comparison-table-container { overflow: visible; }
+      #comparison-table-container table { min-width: 0; }
+      th, td { padding: 8px; font-size: 9pt; }
+      tr { break-inside: avoid; }
+      thead { display: table-header-group; }
+      .reference-content { grid-template-columns: 1fr 1fr; }
+      .footer { font-size: 7pt; }
+      a { color: inherit; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#results">Skip to results</a>
+  <noscript><div class="no-script" role="alert">JavaScript is required to calculate the comparison. Enable it in your browser, then reopen this file. No information is sent to a server.</div></noscript>
+  <div class="page">
+    <header class="masthead">
+      <div>
+        <p class="eyebrow">FY 2026–27 · India · New regime</p>
+        <h1>Contractor &amp; salary calculator</h1>
+        <p class="lede">Compare your US export fee with an Indian contract or employee salary. See the effect of GST, income tax and TDS separately.</p>
+      </div>
+      <div class="masthead-actions" aria-label="Calculator actions">
+        <button class="button" type="button" id="reset-inputs">Reset amounts</button>
+        <button class="button" type="button" id="download-html">Download HTML</button>
+        <button class="button primary" type="button" id="print-results">Print / save PDF</button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <section class="panel inputs-panel" aria-labelledby="inputs-heading">
+        <div class="panel-heading"><span class="section-number" aria-hidden="true">1</span><h2 id="inputs-heading">Your amounts</h2></div>
+        <p class="section-copy">Enter your amounts to calculate each case.</p>
+        <div class="input-stack">
+          <div class="field">
+            <label for="amount-period">I’m entering amounts</label>
+            <select id="amount-period">
+              <option value="monthly" selected>Per month</option>
+              <option value="annual">Per year</option>
+            </select>
+          </div>
+          <div class="main-amounts">
+            <div class="field">
+              <label for="export-fee">US export fee <span class="amount-period-label">/ month</span></label>
+              <div class="input-wrap"><span class="input-prefix" aria-hidden="true">₹</span><input class="money-input" id="export-fee" type="number" inputmode="decimal" min="0" step="any" placeholder="Enter amount" aria-describedby="export-fee-hint"></div>
+              <small id="export-fee-hint">Your current fee, before income tax.</small>
+            </div>
+            <div class="field">
+              <label for="india-quote">Indian contract quote <span class="amount-period-label">/ month</span></label>
+              <div class="input-wrap"><span class="input-prefix" aria-hidden="true">₹</span><input class="money-input" id="india-quote" type="number" inputmode="decimal" min="0" step="any" placeholder="Enter amount" aria-describedby="india-quote-hint"></div>
+              <small id="india-quote-hint">Compared with GST added and GST included.</small>
+            </div>
+            <div class="field">
+              <label for="salary-gross">Employee gross salary <span class="amount-period-label">/ month</span></label>
+              <div class="input-wrap"><span class="input-prefix" aria-hidden="true">₹</span><input class="money-input" id="salary-gross" type="number" inputmode="decimal" min="0" step="any" placeholder="Enter amount" aria-describedby="salary-gross-hint"></div>
+              <small id="salary-gross-hint">Gross cash salary, before tax. Not CTC.</small>
+            </div>
+          </div>
+        </div>
+
+        <details class="assumptions-input">
+          <summary>Tax &amp; expense assumptions</summary>
+          <div class="input-stack">
+            <div class="percentage-grid">
+              <div class="field">
+                <label for="gst-rate">Domestic GST</label>
+                <div class="input-wrap"><input class="percent-input" id="gst-rate" type="number" inputmode="decimal" step="any" value="18"><span class="input-suffix" aria-hidden="true">%</span></div>
+              </div>
+              <div class="field">
+                <label for="tds-rate">Contractor TDS</label>
+                <div class="input-wrap"><input class="percent-input" id="tds-rate" type="number" inputmode="decimal" step="any" value="2" aria-describedby="tds-notice"><span class="input-suffix" aria-hidden="true">%</span></div>
+              </div>
+              <div class="field">
+                <label for="profit-rate">Declared profit</label>
+                <div class="input-wrap"><input class="percent-input" id="profit-rate" type="number" inputmode="decimal" step="any" value="50" aria-describedby="profit-rate-hint"><span class="input-suffix" aria-hidden="true">%</span></div>
+                <small id="profit-rate-hint">Professional presumptive income.</small>
+              </div>
+              <div class="field">
+                <label for="cash-rate">Cash receipts</label>
+                <div class="input-wrap"><input class="percent-input" id="cash-rate" type="number" inputmode="decimal" step="any" value="0" aria-describedby="cash-rate-hint"><span class="input-suffix" aria-hidden="true">%</span></div>
+                <small id="cash-rate-hint">Used to check the receipt limit.</small>
+              </div>
+            </div>
+            <div class="field">
+              <label for="contractor-costs">Actual contractor costs <span class="amount-period-label">/ month</span></label>
+              <div class="input-wrap"><span class="input-prefix" aria-hidden="true">₹</span><input class="money-input" id="contractor-costs" type="number" inputmode="decimal" step="any" value="0" aria-describedby="contractor-costs-hint"></div>
+              <small id="contractor-costs-hint">Reduces spendable cash in all contractor cases; no extra deduction from presumptive taxable income.</small>
+            </div>
+            <div class="field">
+              <label for="salary-deductions">Employee payroll deductions <span class="amount-period-label">/ month</span></label>
+              <div class="input-wrap"><span class="input-prefix" aria-hidden="true">₹</span><input class="money-input" id="salary-deductions" type="number" inputmode="decimal" step="any" value="0" aria-describedby="salary-deductions-hint"></div>
+              <small id="salary-deductions-hint">For example, employee PF. Reduces cash only; no additional income-tax deduction is assumed.</small>
+            </div>
+          </div>
+        </details>
+        <p class="notice tds-notice" id="tds-notice"><strong>TDS assumption:</strong> 2% is your quoted assumption. Professional services can require 10%; confirm the classification.</p>
+        <p class="cashflow-note">TDS is a credit against your income tax. It changes the amount received now, not the final tax by itself.</p>
+        <div class="error-panel" id="input-errors" role="alert" aria-live="assertive" hidden></div>
+      </section>
+
+      <section class="results-panel" id="results" aria-labelledby="results-heading">
+        <div class="results-header">
+          <div>
+            <div class="panel-heading"><span class="section-number" aria-hidden="true">2</span><h2 id="results-heading">Compare what you keep</h2></div>
+            <p class="section-copy">After final income tax, GST and your entered cash costs. Monthly values are annual averages.</p>
+          </div>
+          <div class="display-controls">
+            <label for="result-period">Show results</label>
+            <select class="compact-select" id="result-period"><option value="monthly" selected>Per month</option><option value="annual">Per year</option></select>
+          </div>
+        </div>
+
+        <div id="case-cards" aria-live="polite" aria-atomic="false"><p class="placeholder">Your four comparisons will appear here.</p></div>
+
+        <section class="panel targets-panel" aria-labelledby="targets-heading">
+          <h3 id="targets-heading">Match your current export income</h3>
+          <p class="section-copy">Amounts needed to retain the same estimated cash as your US export case.</p>
+          <div id="negotiation-targets"><p class="placeholder">Equivalent Indian contract and salary amounts will appear here.</p></div>
+        </section>
+
+        <section class="panel detail-panel" aria-labelledby="comparison-heading">
+          <h3 id="comparison-heading">Where the money goes</h3>
+          <p class="section-copy">Separate the fee you earn, GST you collect, and tax withheld on your behalf.</p>
+          <div id="comparison-table-container" tabindex="0" role="region" aria-label="Detailed comparison; scroll horizontally if needed"><p class="placeholder">The detailed comparison will appear here.</p></div>
+          <p class="table-note">A bank receipt is not the same as final take-home. GST must be set aside, and the remaining income tax may still be payable.</p>
+        </section>
+
+        <section class="panel detail-panel" aria-labelledby="calculation-heading">
+          <div class="calculation-header">
+            <div><h3 id="calculation-heading">Check the tax calculation</h3><p class="section-copy" style="margin-top:7px">See the taxable income and slab calculation.</p></div>
+            <div class="field">
+              <label for="calculation-case">Calculation for</label>
+              <select id="calculation-case">
+                <option value="export">US export contractor</option>
+                <option value="indiaExtra">Indian contractor · GST extra</option>
+                <option value="indiaIncluded">Indian contractor · GST included</option>
+                <option value="salary">Employee salary</option>
+              </select>
+            </div>
+          </div>
+          <div id="calculation-details"><p class="placeholder">The selected case’s calculation will appear here.</p></div>
+        </section>
+        <p id="status-note" role="status" aria-live="polite">Planning estimate using the assumptions below. Confirm contract classification and filing treatment with your CA.</p>
+      </section>
+    </main>
+
+    <details class="panel reference-panel">
+      <summary>Assumptions, limits &amp; official sources</summary>
+      <div class="reference-content">
+        <section aria-labelledby="assumptions-heading">
+          <h3 id="assumptions-heading">What this comparison assumes</h3>
+          <ul>
+            <li>You are an Indian resident individual. Contractor income qualifies for professional presumptive taxation, with 50% declared profit by default.</li>
+            <li>The presumptive receipt limit is ₹50 lakh, or ₹75 lakh when cash receipts do not exceed 5%. Receipts above the applicable limit need a different tax calculation.</li>
+            <li>The US case meets export-of-services conditions and uses a valid LUT. The Indian cases are domestic services, with GST either added to or included in the quote.</li>
+            <li>There is no other income, income taxed at special rates, foreign tax credit, GST input credit, or additional tax deduction. Fees exclude separately accounted GST.</li>
+            <li>Actual contractor costs reduce cash only. They are not deducted again from presumptive income. Employee payroll deductions also reduce cash only.</li>
+            <li>Salary means gross cash salary, not CTC. The salary case includes the applicable standard deduction; employee services are outside GST.</li>
+            <li>Each case represents a full 12-month alternative. This is not a calculation for a year split between export, Indian contracting and employment.</li>
+            <li>Rules are fixed to FY 2026–27 and do not update automatically. Figures are estimates; statutory rounding and filing details can change the final return.</li>
+          </ul>
+        </section>
+        <section aria-labelledby="sources-heading">
+          <h3 id="sources-heading">Official references</h3>
+          <ul class="source-list">
+            <li><a href="https://www.incometax.gov.in/iec/foportal/help/all-topics/e-filing-services/tax-payments" target="_blank" rel="noopener noreferrer">Income Tax Department — tax payments and the 2025 Act</a><small>New Act applies from 1 April 2026; salary and other TDS provisions.</small></li>
+            <li><a href="https://www.incometaxindia.gov.in/documents/20117/15766092/FAQs-Budget-2026%2BUpdated.pdf/daf54d14-aca9-c4ea-b786-598fd2f8d4c4?t=1771846962606" target="_blank" rel="noopener noreferrer">Income Tax Department — Budget 2026 FAQs</a><small>Includes technical and professional service withholding.</small></li>
+            <li><a href="https://www.incometaxindia.gov.in/documents/20117/42998/Section-393_2026-03-27_10-53-24_00f77b_en.pdf/e3e175fc-b0b9-b1b1-b533-083cff93fcbd?t=1774632229010&amp;version=12.0" target="_blank" rel="noopener noreferrer">Income-tax Act 2025 — section 393</a><small>Table 6(iii): technical and professional service TDS rates.</small></li>
+            <li><a href="https://www.gstcouncil.gov.in/sites/default/files/2024-02/sectoral-faq-it-ite.pdf" target="_blank" rel="noopener noreferrer">GST Council — IT / ITES FAQ</a><small>18% GST on IT services; export and place-of-supply principles.</small></li>
+            <li><a href="https://gstcouncil.gov.in/sites/default/files/2024-06/circular-no-202-14-2023.pdf" target="_blank" rel="noopener noreferrer">CBIC — export-of-services Circular 202/14/2023</a><small>Export conditions, including RBI-permitted rupee receipts.</small></li>
+            <li><a href="https://wmstatic-prd.incometaxindia.gov.in/documents/20117/42998/Tax-Deduction-at-Source-TDS_2026-03-19_04-48-24_a787f2_en.pdf/64a334e1-711d-d69e-dce8-d67b1756907f?t=1774004077407&amp;version=1.0" target="_blank" rel="noopener noreferrer">Income Tax Department — TDS guidance</a><small>Separately shown GST is excluded from service-fee TDS; Circular 23/2017.</small></li>
+          </ul>
+        </section>
+      </div>
+    </details>
+    <footer class="footer"><p>Local calculator · Your inputs stay in this browser.</p><p>Indian rupees (₹) · FY 2026–27 new regime</p></footer>
+  </div>
+  <script>
+(function (root) {
+  'use strict';
+
+  // All monetary inputs and financial fields are annual INR unless explicitly
+  // named Monthly. Rates use fractions: 18% = 0.18. This model assumes an Indian
+  // resident individual, ordinary-rate income only, and no other income.
+  const constants = Object.freeze({
+    taxYear: '2026–27',
+    months: 12,
+    standardDeduction: 75000,
+    rebateIncomeLimit: 1200000,
+    maximumRebate: 60000,
+    cessRate: 0.04,
+    cashReceiptLimit: 0.05,
+    standardReceiptsCap: 5000000,
+    lowCashReceiptsCap: 7500000,
+    annualTdsThreshold: 50000,
+    roundingUnit: 10,
+    maximumInputAmount: 1000000000000,
+    slabs: Object.freeze([
+      Object.freeze({ from: 0, to: 400000, rate: 0 }),
+      Object.freeze({ from: 400000, to: 800000, rate: 0.05 }),
+      Object.freeze({ from: 800000, to: 1200000, rate: 0.10 }),
+      Object.freeze({ from: 1200000, to: 1600000, rate: 0.15 }),
+      Object.freeze({ from: 1600000, to: 2000000, rate: 0.20 }),
+      Object.freeze({ from: 2000000, to: 2400000, rate: 0.25 }),
+      Object.freeze({ from: 2400000, to: null, rate: 0.30 })
+    ]),
+    surchargeBands: Object.freeze([
+      Object.freeze({ threshold: 5000000, rate: 0.10, previousRate: 0 }),
+      Object.freeze({ threshold: 10000000, rate: 0.15, previousRate: 0.10 }),
+      Object.freeze({ threshold: 20000000, rate: 0.25, previousRate: 0.15 })
+    ])
+  });
+
+  const defaults = Object.freeze({
+    exportFeeAnnual: null,
+    indiaQuoteAnnual: null,
+    salaryGrossAnnual: null,
+    gstRate: 0.18,
+    tdsRate: 0.02,
+    profitRate: 0.50,
+    cashReceiptsRate: 0,
+    contractorCostsAnnual: 0,
+    salaryDeductionsAnnual: 0
+  });
+
+  const taxFields = [
+    'rawTaxable', 'taxable', 'slabTax', 'rebate', 'rebateRelief',
+    'taxAfterRebate', 'surchargeRate', 'surcharge', 'surchargeRelief',
+    'taxBeforeCess', 'cess', 'finalTax'
+  ];
+  const caseFields = [
+    'quote', 'fee', 'gst', 'invoice', 'tds', 'bank', 'cost', 'taxable',
+    'profit', 'standardDeduction', 'slabTax', 'rebate', 'rebateRelief',
+    'surchargeRate', 'surcharge', 'surchargeRelief', 'cess', 'finalTax',
+    'taxBalance', 'netAnnual', 'netMonthly', 'deltaAnnual', 'deltaMonthly',
+    'deltaPercent'
+  ];
+  const amountIsValid = value => typeof value === 'number' && Number.isFinite(value)
+    && value >= 0 && value <= constants.maximumInputAmount;
+  const rateIsValid = (value, minimum = 0) => typeof value === 'number'
+    && Number.isFinite(value) && value >= minimum && value <= 1;
+  const roundTen = value => Math.round(value / constants.roundingUnit) * constants.roundingUnit;
+
+  function slabTax(income) {
+    return constants.slabs.reduce((sum, slab) => {
+      const upper = slab.to === null ? income : Math.min(income, slab.to);
+      return sum + Math.max(0, upper - slab.from) * slab.rate;
+    }, 0);
+  }
+
+  function taxDetails(income) {
+    if (!amountIsValid(income)) {
+      return Object.assign(Object.fromEntries(taxFields.map(key => [key, null])), {
+        valid: false,
+        errors: ['Taxable income must be a non-negative number within the supported range.']
+      });
+    }
+    const taxable = roundTen(income);
+    const base = slabTax(taxable);
+    const rebate = taxable <= constants.rebateIncomeLimit
+      ? Math.min(base, constants.maximumRebate) : 0;
+    const rebateRelief = taxable > constants.rebateIncomeLimit
+      ? Math.max(0, base - (taxable - constants.rebateIncomeLimit)) : 0;
+    const taxAfterRebate = base - rebate - rebateRelief;
+    let applicableBand = null;
+    for (const band of constants.surchargeBands) {
+      if (taxable > band.threshold) applicableBand = band;
+    }
+    const surchargeRate = applicableBand ? applicableBand.rate : 0;
+    const surcharge = taxAfterRebate * surchargeRate;
+    const surchargeRelief = applicableBand ? Math.max(0,
+      taxAfterRebate + surcharge
+      - slabTax(applicableBand.threshold) * (1 + applicableBand.previousRate)
+      - (taxable - applicableBand.threshold)
+    ) : 0;
+    const taxBeforeCess = taxAfterRebate + surcharge - surchargeRelief;
+    const cess = taxBeforeCess * constants.cessRate;
+    return {
+      valid: true, errors: [], rawTaxable: income, taxable, slabTax: base,
+      rebate, rebateRelief, taxAfterRebate, surchargeRate, surcharge,
+      surchargeRelief, taxBeforeCess, cess, finalTax: roundTen(taxBeforeCess + cess)
+    };
+  }
+
+  function invalidCase(id, label, status, errors, quote, fee, receiptLimit) {
+    return Object.assign(Object.fromEntries(caseFields.map(key => [key, null])), {
+      id, label, eligible: false, status, errors,
+      quote: amountIsValid(quote) ? quote : null,
+      fee: amountIsValid(fee) ? fee : null,
+      receiptLimit: receiptLimit || null
+    });
+  }
+
+  function normalizeInputs(inputs) {
+    const normalized = {};
+    for (const key of Object.keys(defaults)) {
+      const value = inputs && inputs[key];
+      normalized[key] = typeof value === 'number' && Number.isFinite(value) ? value : null;
+    }
+    return normalized;
+  }
+
+  function calculateCase(id, label, input) {
+    const salary = id === 'salary';
+    const domestic = id === 'indiaExtra' || id === 'indiaIncluded';
+    const quote = salary ? input.salaryGrossAnnual
+      : domestic ? input.indiaQuoteAnnual : input.exportFeeAnnual;
+    const errors = [];
+    if (!amountIsValid(quote)) errors.push(`${label}: enter a valid non-negative annual amount.`);
+    if (salary) {
+      if (!amountIsValid(input.salaryDeductionsAnnual)) errors.push('Enter valid annual employee cash deductions.');
+    } else {
+      if (!rateIsValid(input.profitRate, 0.5)) errors.push('Presumptive profit must be between 50% and 100%.');
+      if (!rateIsValid(input.cashReceiptsRate)) errors.push('Cash receipts must be between 0% and 100%.');
+      if (!amountIsValid(input.contractorCostsAnnual)) errors.push('Enter valid annual contractor cash costs.');
+    }
+    if (domestic) {
+      if (!rateIsValid(input.gstRate)) errors.push('GST rate must be between 0% and 100%.');
+      if (!rateIsValid(input.tdsRate)) errors.push('TDS rate must be between 0% and 100%.');
+    }
+    const fee = id === 'indiaIncluded'
+      ? (amountIsValid(quote) && rateIsValid(input.gstRate) ? quote / (1 + input.gstRate) : null)
+      : quote;
+    const receiptLimit = salary || !rateIsValid(input.cashReceiptsRate) ? null
+      : input.cashReceiptsRate <= constants.cashReceiptLimit
+        ? constants.lowCashReceiptsCap : constants.standardReceiptsCap;
+    if (errors.length) return invalidCase(id, label, 'Check inputs', errors, quote, fee, receiptLimit);
+    if (!salary && fee > receiptLimit) {
+      const message = `${label}: professional fees exceed the ₹${receiptLimit / 100000} lakh presumptive limit.`;
+      return invalidCase(id, label, 'Above receipts limit', [message], quote, fee, receiptLimit);
+    }
+    const gst = domestic ? fee * input.gstRate : 0;
+    const invoice = fee + gst;
+    const cost = salary ? input.salaryDeductionsAnnual : input.contractorCostsAnnual;
+    const profit = salary ? fee : fee * input.profitRate;
+    const standardDeduction = salary ? Math.min(profit, constants.standardDeduction) : 0;
+    const tax = taxDetails(Math.max(0, profit - standardDeduction));
+    const tds = salary ? tax.finalTax
+      : domestic && fee > constants.annualTdsThreshold ? fee * input.tdsRate : 0;
+    const bank = invoice - tds - (salary ? cost : 0);
+    const netAnnual = fee - cost - tax.finalTax;
+    return {
+      id, label, eligible: true, status: salary ? 'Salary model' : 'Presumptive model',
+      errors: [], receiptLimit, quote, fee, gst, invoice, tds, bank, cost, profit,
+      standardDeduction, taxable: tax.taxable, slabTax: tax.slabTax,
+      rebate: tax.rebate, rebateRelief: tax.rebateRelief,
+      surchargeRate: tax.surchargeRate, surcharge: tax.surcharge,
+      surchargeRelief: tax.surchargeRelief, cess: tax.cess,
+      finalTax: tax.finalTax, taxBalance: tax.finalTax - tds,
+      netAnnual, netMonthly: netAnnual / constants.months,
+      deltaAnnual: null, deltaMonthly: null, deltaPercent: null
+    };
+  }
+
+  // Find the first matching salary on a ₹10 annual-gross grid. Each interval is
+  // separated at rebate/surcharge marginal-relief boundaries: take-home can fall
+  // slightly in those intervals because cess also applies to the relieved tax.
+  // Splitting at them avoids assuming globally monotonic take-home.
+  function salaryTarget(targetNet, cashDeductions) {
+    if (!Number.isFinite(targetNet) || !amountIsValid(cashDeductions)) return null;
+    const salaryNet = gross => gross - cashDeductions
+      - taxDetails(Math.max(0, gross - constants.standardDeduction)).finalTax;
+    const roundedUp = value => Math.ceil(value / constants.roundingUnit) * constants.roundingUnit;
+    const points = new Set([0, constants.standardDeduction]);
+    const addTaxablePoint = taxable => points.add(roundedUp(taxable) + constants.standardDeduction);
+    constants.slabs.forEach(slab => addTaxablePoint(slab.from));
+    addTaxablePoint(constants.rebateIncomeLimit + constants.maximumRebate / (1 - 0.15));
+    for (const band of constants.surchargeBands) {
+      addTaxablePoint(band.threshold);
+      const thresholdTax = slabTax(band.threshold) * (1 + band.previousRate);
+      const endRelief = (band.threshold - thresholdTax - 420000 * (1 + band.rate))
+        / (1 - 0.30 * (1 + band.rate));
+      addTaxablePoint(endRelief);
+    }
+    let upper = Math.max(30000000, roundedUp(Math.max(0, targetNet + cashDeductions) * 2));
+    upper = Math.min(upper, constants.maximumInputAmount);
+    while (salaryNet(upper) < targetNet && upper < constants.maximumInputAmount) {
+      upper = Math.min(upper * 2, constants.maximumInputAmount);
+    }
+    if (salaryNet(upper) < targetNet) return null;
+    points.add(upper);
+    const boundaries = Array.from(points).filter(p => p <= upper).sort((a, b) => a - b);
+    if (salaryNet(0) >= targetNet) return { gross: 0, net: salaryNet(0) };
+    for (let i = 1; i < boundaries.length; i++) {
+      const left = boundaries[i - 1];
+      const right = boundaries[i];
+      if (salaryNet(right) < targetNet) continue;
+      let low = Math.floor(left / constants.roundingUnit);
+      let high = Math.ceil(right / constants.roundingUnit);
+      while (low < high) {
+        const middle = Math.floor((low + high) / 2);
+        if (salaryNet(middle * constants.roundingUnit) >= targetNet) high = middle;
+        else low = middle + 1;
+      }
+      const gross = high * constants.roundingUnit;
+      return { gross, net: salaryNet(gross) };
+    }
+    return null;
+  }
+
+  function calculate(rawInputs = defaults) {
+    const inputs = normalizeInputs(rawInputs);
+    const cases = [
+      calculateCase('export', 'US export', inputs),
+      calculateCase('indiaExtra', 'India: GST extra', inputs),
+      calculateCase('indiaIncluded', 'India: GST included', inputs),
+      calculateCase('salary', 'Employee payroll', inputs)
+    ];
+    const baseline = cases[0];
+    for (const item of cases) {
+      if (baseline.eligible && item.eligible) {
+        item.deltaAnnual = item.netAnnual - baseline.netAnnual;
+        item.deltaMonthly = item.deltaAnnual / constants.months;
+        item.deltaPercent = baseline.netAnnual === 0 ? null : item.deltaAnnual / baseline.netAnnual;
+      }
+    }
+    const invoiceTarget = amountIsValid(inputs.exportFeeAnnual) && rateIsValid(inputs.gstRate)
+      ? inputs.exportFeeAnnual * (1 + inputs.gstRate) : null;
+    const salary = baseline.eligible ? salaryTarget(baseline.netAnnual, inputs.salaryDeductionsAnnual) : null;
+    const targets = {
+      gstInclusiveInvoiceAnnual: invoiceTarget,
+      gstInclusiveInvoiceMonthly: invoiceTarget === null ? null : invoiceTarget / constants.months,
+      salaryGrossAnnual: salary ? salary.gross : null,
+      salaryGrossMonthly: salary ? salary.gross / constants.months : null,
+      salaryNetAnnual: salary ? salary.net : null,
+      salaryTargetNetAnnual: baseline.eligible ? baseline.netAnnual : null,
+      salaryStatus: salary ? 'Estimate on a ₹10 annual gross-salary grid' : 'Unavailable for these inputs'
+    };
+    return {
+      inputs, cases, targets,
+      errors: Array.from(new Set(cases.flatMap(item => item.errors)))
+    };
+  }
+
+  root.TaxCalculator = Object.freeze({ constants, defaults, taxDetails, calculate });
+})(globalThis);
+
+</script>
+  <script>
+(function () {
+  'use strict';
+  const engine = globalThis.TaxCalculator;
+  const $ = (id) => document.getElementById(id);
+  const moneyFields = {
+    'export-fee': 'exportFeeAnnual',
+    'india-quote': 'indiaQuoteAnnual',
+    'salary-gross': 'salaryGrossAnnual',
+    'contractor-costs': 'contractorCostsAnnual',
+    'salary-deductions': 'salaryDeductionsAnnual'
+  };
+  const rateFields = {
+    'gst-rate': 'gstRate',
+    'tds-rate': 'tdsRate',
+    'profit-rate': 'profitRate',
+    'cash-rate': 'cashReceiptsRate'
+  };
+  const incomeFields = {
+    export: 'export-fee', indiaExtra: 'india-quote',
+    indiaIncluded: 'india-quote', salary: 'salary-gross'
+  };
+  const labels = {
+    export: 'US export', indiaExtra: 'India · GST extra',
+    indiaIncluded: 'India · GST included', salary: 'Employee payroll'
+  };
+  const descriptions = {
+    export: 'Professional fee under a qualifying LUT export',
+    indiaExtra: 'Your quoted fee, with GST added to the invoice',
+    indiaIncluded: 'GST is absorbed within your quoted total',
+    salary: 'Gross salary with the ₹75,000 standard deduction'
+  };
+  const currency = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 });
+  const decimal = new Intl.NumberFormat('en-IN', { maximumFractionDigits: 1 });
+  const number = (value) => Number.isFinite(value) ? currency.format(value) : '—';
+  const escape = (value) => String(value).replace(/[&<>"']/g, (ch) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  let inputPeriod = $('amount-period').value;
+  let lastResult = null;
+  const readNumber = (el) => el.value.trim() === '' || !Number.isFinite(Number(el.value)) ? null : Number(el.value);
+  const isPending = (item) => {
+    const input = $(incomeFields[item.id]);
+    return input.value.trim() === '' && !input.validity.badInput;
+  };
+
+  function readInputs() {
+    const result = {};
+    const annualFactor = inputPeriod === 'monthly' ? 12 : 1;
+    for (const [id, key] of Object.entries(moneyFields)) {
+      const value = readNumber($(id));
+      result[key] = value === null ? null : value * annualFactor;
+      const pendingIncome = Object.values(incomeFields).includes(id) && $(id).value.trim() === '' && !$(id).validity.badInput;
+      $(id).setAttribute('aria-invalid', String(!pendingIncome && (value === null || value < 0 || value * annualFactor > engine.constants.maximumInputAmount)));
+    }
+    for (const [id, key] of Object.entries(rateFields)) {
+      const value = readNumber($(id));
+      result[key] = value === null ? null : value / 100;
+      $(id).setAttribute('aria-invalid', String(value === null || value < (id === 'profit-rate' ? 50 : 0) || value > 100));
+    }
+    return result;
+  }
+
+  function displayDivisor() { return $('result-period').value === 'monthly' ? 12 : 1; }
+  function periodWord() { return $('result-period').value === 'monthly' ? 'month' : 'year'; }
+  function formatPeriod(value) { return number(Number.isFinite(value) ? value / displayDivisor() : null); }
+  function changeText(item) {
+    if (!Number.isFinite(item.deltaAnnual)) return 'Comparison unavailable';
+    if (item.id === 'export') return 'Your current baseline';
+    if (Math.abs(item.deltaAnnual) < 0.01) return 'Same as your current take-home';
+    return `${formatPeriod(Math.abs(item.deltaAnnual))} ${item.deltaAnnual < 0 ? 'less' : 'more'} per ${periodWord()}`;
+  }
+
+  function renderCards(result) {
+    $('case-cards').innerHTML = result.cases.map((item) => {
+      const direction = !Number.isFinite(item.deltaAnnual) || item.id === 'export' || Math.abs(item.deltaAnnual) < 0.01 ? 'neutral' : item.deltaAnnual < 0 ? 'negative' : 'positive';
+      const badge = item.id === 'export' ? '<span class="case-badge">Current</span>' : '';
+      const data = isPending(item)
+        ? `<p class="case-net unavailable" data-net="${item.id}">Enter amount</p><p class="case-meta">Add your ${item.id === 'export' ? 'US export fee' : item.id === 'salary' ? 'employee gross salary' : 'Indian contract quote'} to see the estimate.</p>`
+        : item.eligible
+        ? `<p class="case-net" data-net="${item.id}">${formatPeriod(item.netAnnual)}</p><p class="case-unit">after tax / ${periodWord()}</p><p class="case-delta ${direction}" data-delta="${item.id}">${changeText(item)}</p><p class="case-meta">Income tax: ${formatPeriod(item.finalTax)} / ${periodWord()}</p>`
+        : `<p class="case-net unavailable" data-net="${item.id}">Unavailable</p><p class="case-status">${escape(item.status)}</p><p class="case-meta">Update the inputs or use a different tax method.</p>`;
+      return `<article class="case-card ${item.id === 'export' ? 'baseline' : ''}" data-case="${item.id}" aria-label="${escape(labels[item.id])}"><div class="case-heading"><h3 class="case-title">${escape(labels[item.id])}</h3>${badge}</div><p class="case-description">${escape(descriptions[item.id])}</p>${data}</article>`;
+    }).join('');
+  }
+
+  function renderTargets(result) {
+    if (isPending(result.cases[0])) {
+      $('negotiation-targets').innerHTML = '<p class="placeholder">Enter your US export fee to see the Indian invoice and salary needed to match it.</p>';
+      return;
+    }
+    const target = result.targets || {};
+    const invoice = target.gstInclusiveInvoiceAnnual;
+    const salary = target.salaryGrossAnnual;
+    $('negotiation-targets').innerHTML = `<div class="target"><span class="target-label">Indian invoice including GST</span><strong class="target-amount" data-target="invoice">${formatPeriod(invoice)}<small> / ${periodWord()}</small></strong><p class="target-note">Preserves your current fee before GST.</p></div><div class="target"><span class="target-label">Comparable employee gross salary</span><strong class="target-amount" data-target="salary">${formatPeriod(salary)}<small> / ${periodWord()}</small></strong><p class="target-note">${Number.isFinite(salary) ? 'Estimate to match or exceed your current take-home, with entered payroll deductions.' : escape(target.salaryStatus || 'Requires a valid current export calculation.')}</p></div>`;
+  }
+
+  function renderComparison(result) {
+    const rows = [
+      ['Fee / gross salary, excluding GST', 'fee'],
+      ['GST charged', 'gst'],
+      ['Total invoice / gross salary', 'invoice'],
+      ['TDS withheld', 'tds'],
+      ['Receipt after TDS, before cash costs', 'receiptBeforeCosts'],
+      ['GST remitted, assuming no input credit', 'gst'],
+      ['Business costs / payroll deductions', 'cost'],
+      ['Final income tax, including cess', 'finalTax'],
+      ['Remaining tax / (potential refund)', 'taxBalance'],
+      ['Take-home after final tax and costs', 'netAnnual']
+    ];
+    const th = result.cases.map((item) => `<th scope="col">${escape(labels[item.id])}</th>`).join('');
+    const body = rows.map(([label, field]) => {
+      const tdsRow = field === 'tds';
+      const cells = result.cases.map((item) => {
+        let value = field === 'receiptBeforeCosts'
+          ? (Number.isFinite(item.invoice) && Number.isFinite(item.tds) ? item.invoice - item.tds : null)
+          : item[field];
+        let text = formatPeriod(value);
+        if (field === 'taxBalance' && Number.isFinite(value) && value < 0) text = `(${formatPeriod(-value)})`;
+        if (item.id === 'salary' && field === 'gst') text = 'Not applicable';
+        return `<td${field === 'netAnnual' ? ` data-table-net="${item.id}"` : ''}>${text}</td>`;
+      }).join('');
+      return `<tr class="${field === 'netAnnual' ? 'net-row' : tdsRow ? 'credit-row' : ''}"><th scope="row">${escape(label)}</th>${cells}</tr>`;
+    }).join('');
+    const caption = $('result-period').value === 'monthly'
+      ? 'Monthly equivalents based on a full 12-month year. Income tax is calculated annually.'
+      : 'Annual comparison for four separate full-year arrangements.';
+    $('comparison-table-container').innerHTML = `<table class="comparison-table"><caption>${caption}</caption><thead><tr><th scope="col">Cash flow</th>${th}</tr></thead><tbody>${body}</tbody></table><p class="table-note">TDS is part of your final income tax. The rows explain each amount; do not subtract both TDS and final tax again. A negative tax balance is a potential refund.</p>`;
+  }
+
+  function renderCalculation(result) {
+    const item = result.cases.find((c) => c.id === $('calculation-case').value);
+    if (!item) return;
+    if (isPending(item)) {
+      $('calculation-details').innerHTML = '<p class="placeholder">Enter an amount for this case to see its tax calculation.</p>';
+      return;
+    }
+    if (!item.eligible) {
+      $('calculation-details').innerHTML = `<p class="empty-calculation">${escape(item.status)}. This arrangement cannot be calculated with the selected inputs.</p>`;
+      return;
+    }
+    const steps = [
+      [item.id === 'salary' ? 'Annual gross salary' : 'Annual professional fee, excluding GST', item.fee],
+      [item.id === 'salary' ? 'Salary income before standard deduction' : `Presumptive profit (${decimal.format(result.inputs.profitRate * 100)}%)`, item.profit],
+      ['Salary standard deduction', item.standardDeduction],
+      ['Taxable income, rounded to ₹10', item.taxable],
+      ['Income tax from slabs, before relief', item.slabTax],
+      ['Less resident rebate', item.rebate],
+      ['Less relief above the rebate threshold', item.rebateRelief],
+      [`Surcharge (${decimal.format(item.surchargeRate * 100)}%) before relief`, item.surcharge],
+      ['Less surcharge marginal relief', item.surchargeRelief],
+      ['Health and education cess (4%)', item.cess],
+      ['Final annual income tax, rounded to ₹10', item.finalTax]
+    ];
+    $('calculation-details').innerHTML = `<dl class="calculation-list">${steps.map(([label, value], index) => `<div class="calculation-row${index === steps.length - 1 ? ' calculation-total' : ''}"><dt>${escape(label)}</dt><dd>${number(value)}</dd></div>`).join('')}</dl><p class="table-note">These tax steps are annual, even when the main results show monthly amounts. Displayed amounts are rounded; the model retains calculation precision.</p>`;
+  }
+
+  function update() {
+    const result = engine.calculate(readInputs());
+    lastResult = result;
+    const errors = [...new Set(result.cases.filter((item) => !isPending(item)).flatMap((item) => item.errors))];
+    $('input-errors').hidden = errors.length === 0;
+    $('input-errors').innerHTML = errors.length ? `<strong>Check these inputs</strong><ul>${errors.map((message) => `<li>${escape(message)}</li>`).join('')}</ul>` : '';
+    renderCards(result);
+    renderTargets(result);
+    renderComparison(result);
+    renderCalculation(result);
+    $('status-note').textContent = result.cases.every(isPending)
+      ? 'Enter your amounts above to start. Each case updates as you type.'
+      : 'Four full-year alternatives. Amounts in Indian rupees. Other income and GST input credits are excluded.';
+  }
+
+  for (const id of [...Object.keys(moneyFields), ...Object.keys(rateFields)]) $(id).addEventListener('input', update);
+  $('result-period').addEventListener('change', update);
+  $('calculation-case').addEventListener('change', () => lastResult && renderCalculation(lastResult));
+  $('amount-period').addEventListener('change', function () {
+    const values = readInputs();
+    inputPeriod = this.value;
+    const divisor = inputPeriod === 'monthly' ? 12 : 1;
+    for (const [id, key] of Object.entries(moneyFields)) $(id).value = values[key] === null ? '' : String(Number((values[key] / divisor).toFixed(6)));
+    document.querySelectorAll('.amount-period-label').forEach((el) => { el.textContent = inputPeriod === 'monthly' ? '/ month' : '/ year'; });
+    update();
+  });
+  $('reset-inputs').addEventListener('click', () => {
+    inputPeriod = 'monthly';
+    $('amount-period').value = 'monthly';
+    $('result-period').value = 'monthly';
+    $('calculation-case').value = 'export';
+    for (const [id, key] of Object.entries(moneyFields)) $(id).value = engine.defaults[key] === null ? '' : String(engine.defaults[key] / 12);
+    for (const [id, key] of Object.entries(rateFields)) $(id).value = String(engine.defaults[key] * 100);
+    document.querySelectorAll('.amount-period-label').forEach((el) => { el.textContent = '/ month'; });
+    update();
+  });
+  $('print-results').addEventListener('click', () => window.print());
+  $('download-html').addEventListener('click', () => {
+    const copy = document.documentElement.cloneNode(true);
+    copy.querySelectorAll('input[id]').forEach((input) => input.setAttribute('value', $(input.id).value));
+    copy.querySelectorAll('select[id]').forEach((select) => {
+      Array.from(select.options).forEach((option) => {
+        if (option.value === $(select.id).value) option.setAttribute('selected', '');
+        else option.removeAttribute('selected');
+      });
+    });
+    const blob = new Blob(['<!DOCTYPE html>\n', copy.outerHTML], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'india_salary_comparison_calculator.html';
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  });
+  update();
+}());
+
+</script>
+</body>
+</html>
